@@ -143,7 +143,7 @@
   const get = (id) => document.getElementById(id);
   const shift = () => shiftList[state.shift];
   const currentCar = () => shift().cars[state.delivered];
-  const art = window.SwitchyardScene.create(get('map'), { after, map, segments });
+  const art = window.SwitchyardScene.create(get('map'), { after, segments });
   const advance = get('advance');
 
   function linedRoute() {
@@ -273,6 +273,7 @@
   function animate(mode, duration, end) {
     let start;
     state.mode = mode;
+    state.motion = 0;
     render();
     if (reducedMotion.matches) {
       end();
@@ -332,10 +333,11 @@
         restoreFocus();
         return;
       }
-      state.heading = outcome.message;
-      state.message = 'The track is being cleared.';
+      state.heading = 'Arrival confirmed';
+      state.message = `${currentCar().id} reached ${route.end}. The track is clearing.`;
       animate('arrived', after ? 380 : 180, () => {
         state.delivered += 1;
+        state.heading = outcome.message;
         state.mode = currentCar() ? 'ready' : 'complete';
         state.message = currentCar() ? `Next up · ${currentCar().id} → ${currentCar().destination}${currentCar().approach ? ' · ' + currentCar().approach + ' only' : ''}` : '';
         render();

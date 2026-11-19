@@ -502,6 +502,8 @@ window.SwitchyardScene = (() => {
           trace(base, line, '#909087', 1.65, -6);
           trace(base, line, '#909087', 1.65, 6);
         });
+      } else {
+        all.forEach(line => trace(base, line, '#6d879d', 4));
       }
     }
 

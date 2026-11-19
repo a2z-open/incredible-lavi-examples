@@ -641,6 +641,7 @@ body:has(dialog[open]) { overflow: hidden; }
     padding-inline: 10px;
   }
   .baseline .row-head { font-size: 10px; }
+  .workstation .row-head { font-size: 9px; letter-spacing: .015em; }
   .baseline .row-head span:nth-child(3) { display: none; }
   .baseline .row-head span:nth-child(4) { grid-column: 3; justify-self: end; }
   .baseline .queue-row { grid-template-rows: auto auto; row-gap: 3px; }
@@ -650,7 +651,7 @@ body:has(dialog[open]) { overflow: hidden; }
   .baseline .queue-row .row-owner { grid-column: 3; grid-row: 1; align-self: end; justify-self: end; line-height: 1.3; text-align: right; }
   .baseline .queue-row .state { padding: 0; background: transparent; font-size: 10px; }
   .row-incident strong, .workstation .row-incident strong { font-size: 13px; }
-  .row-meta, .workstation .row-meta { font-size: 10px; }
+  .baseline .row-meta, .workstation .row-meta { font-size: 10px; }
   .row-meta span + span::before { margin-right: 4px; }
   .row-meta { column-gap: 4px; }
   .owner-name { font-size: 11px; }
