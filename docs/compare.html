@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compare · Incredible Lavi</title>
+  <link rel="stylesheet" href="gallery.css">
+  <script src="gallery.js" defer></script>
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="./"><span class="mark" aria-hidden="true"><i></i><i></i></span>Incredible Lavi</a>
+    <nav aria-label="Project"><a href="./">All examples</a><a class="download" href="assets/incredible-lavi.zip" download>Download skill <span aria-hidden="true">↓</span></a></nav>
+  </header>
+  <main class="compare" id="comparison" hidden>
+    <div class="compare-top">
+      <div><span class="medium" id="medium"></span><h1 id="demo-title"></h1></div>
+      <p id="task"></p>
+    </div>
+    <details class="notes">
+      <summary>Design notes</summary>
+      <p id="notes-text"></p>
+    </details>
+    <div class="toolbar">
+      <div class="switch" role="group" aria-label="Comparison view">
+        <button type="button" data-mode="before" aria-pressed="false">Before</button>
+        <button type="button" data-mode="after" aria-pressed="false">After</button>
+        <button type="button" data-mode="side" aria-pressed="false">Side by side</button>
+      </div>
+      <a id="standalone" href="./" target="_blank" rel="noopener">Open full size <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="frames">
+      <section id="before" class="pane" aria-label="Before">
+        <div class="pane-label"><strong>Before</strong><a target="_blank" rel="noopener">Full size <span aria-hidden="true">↗</span></a></div>
+        <iframe title="Before"></iframe>
+      </section>
+      <section id="after" class="pane" aria-label="After">
+        <div class="pane-label"><strong>After</strong><a target="_blank" rel="noopener">Full size <span aria-hidden="true">↗</span></a></div>
+        <iframe title="After"></iframe>
+      </section>
+    </div>
+  </main>
+  <noscript><p class="home">Enable JavaScript for the interactive comparison. <a href="./">Open the gallery</a> for standalone links.</p></noscript>
+</body>
+</html>

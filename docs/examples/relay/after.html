@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Relay · Incident queue</title>
+  <link rel="stylesheet" href="relay.css">
+  <script src="fixtures.js" defer></script>
+  <script src="relay.js" defer></script>
+</head>
+<body class="workstation">
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brand"><i class="brand-mark" aria-hidden="true"></i> Relay</div>
+      <div class="workspace"><span>Training workspace</span><b class="avatar" title="Avery Morgan">AM</b></div>
+    </div>
+  </header>
+  <main class="shell">
+    <div class="intro">
+      <h1>Incident queue</h1>
+      <p>Review, assign, and track service incidents.</p>
+    </div>
+    <div class="desk">
+      <section id="queue" class="queue" aria-label="Incidents">
+        <div class="views" role="group" aria-label="Queue views"></div>
+        <div class="filters">
+          <label class="search"><span class="visually-hidden">Search incidents</span><i class="search-icon" aria-hidden="true"></i><input type="search" id="search" placeholder="Search incidents"></label>
+          <label class="priority"><span class="visually-hidden">Priority</span><select id="priority"><option value="">All priorities</option><option value="P1">P1 Critical</option><option value="P2">P2 High</option><option value="P3">P3 Moderate</option></select></label>
+        </div>
+        <div id="queue-list" class="queue-list"></div>
+        <p class="queue-footer" id="queue-footer" aria-live="polite"></p>
+      </section>
+      <section id="detail" aria-label="Incident details"></section>
+    </div>
+  </main>
+  <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog">
+      <h2 id="confirm-title">Resolve this incident?</h2>
+      <p id="confirm-copy"></p>
+      <div class="confirm-actions">
+        <button class="button" value="cancel" autofocus>Cancel</button>
+        <button class="button primary" value="resolve">Resolve incident</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="announcement" class="visually-hidden" role="status"></div>
+</body>
+</html>
