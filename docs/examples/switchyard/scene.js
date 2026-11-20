@@ -64,7 +64,7 @@ window.SwitchyardScene = (() => {
   }
 
   function ties(ctx, line) {
-    ctx.strokeStyle = '#4e4232';
+    ctx.strokeStyle = '#6b553d';
     ctx.lineWidth = 4;
     ctx.lineCap = 'butt';
     ctx.beginPath();
@@ -135,7 +135,7 @@ window.SwitchyardScene = (() => {
     polygon(ctx, [[x + w, top], [x + w + lean, top - d], [x + w + lean, y - d], [x + w, y]], '#343b34');
     polygon(ctx, [[x + w, top], [x + w + lean / 2, top - d / 2 - rise], [x + w + lean, top - d]], gable);
     polygon(ctx, [[x - 5, top + 1], [x + lean / 2 - 5, top - d / 2 - rise], [x + w + lean / 2 + 5, top - d / 2 - rise], [x + w + 5, top + 1]], roof);
-    polygon(ctx, [[x + lean / 2 - 5, top - d / 2 - rise], [x + lean - 4, top - d], [x + lean + w + 5, top - d], [x + w + lean / 2 + 5, top - d / 2 - rise]], '#627165');
+    polygon(ctx, [[x + lean / 2 - 5, top - d / 2 - rise], [x + lean - 4, top - d], [x + lean + w + 5, top - d], [x + w + lean / 2 + 5, top - d / 2 - rise]], '#d5a279');
     for (let n = 8; n < w; n += 9) {
       stroke(ctx, [[x + n, top], [x + n + lean / 2, top - d / 2 - rise]], '#26353166');
     }
@@ -151,8 +151,8 @@ window.SwitchyardScene = (() => {
     const typeSilo = type === 'silo';
     const gradient = ctx.createLinearGradient(x - r, 0, x + r, 0);
     gradient.addColorStop(0, '#454841');
-    gradient.addColorStop(.28, typeSilo ? '#92917b' : '#8b8d73');
-    gradient.addColorStop(.72, typeSilo ? '#666b5e' : '#666d54');
+    gradient.addColorStop(.28, typeSilo ? '#c4b98e' : '#a3aa87');
+    gradient.addColorStop(.72, typeSilo ? '#8a8d71' : '#789077');
     gradient.addColorStop(1, '#40483e');
     ctx.beginPath();
     ctx.ellipse(x + 11, y + 5, r + 10, r * .53, .15, 0, Math.PI * 2);
@@ -172,7 +172,7 @@ window.SwitchyardScene = (() => {
     }
     ctx.beginPath();
     ctx.ellipse(x, y - h, r, r * .38, 0, 0, Math.PI * 2);
-    ctx.fillStyle = typeSilo ? '#a29b83' : '#9b9f82';
+    ctx.fillStyle = typeSilo ? '#e4d5a8' : '#c8ceab';
     ctx.fill();
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = '#c0b3957a';
@@ -196,12 +196,12 @@ window.SwitchyardScene = (() => {
     polygon(ctx, [[x - size * .38, y - 2], [x + size * .43, y - 2], [x + size * 1.2, y + size * .32], [x + size * .39, y + size * .46]], '#111e1d60');
     ctx.fillStyle = '#343d32';
     ctx.fillRect(x - size * .06, y - size * .36, size * .13, size * .39);
-    const hue = ['#3f594a', '#395349', '#465a4a'][shade];
+    const hue = ['#558657', '#5f9467', '#78a963'][shade];
     for (let i = 0; i < 3; i++) {
       const py = y - size * .11 - i * size * .24;
       const width = size * (.42 - i * .06);
       const top = py - size * (.50 - i * .02);
-      polygon(ctx, [[x, top], [x + width, py], [x - width, py]], '#243a32');
+      polygon(ctx, [[x, top], [x + width, py], [x - width, py]], '#325b49');
       polygon(ctx, [[x, top], [x + size * .10, py], [x - width, py]], hue);
     }
   }
@@ -229,130 +229,176 @@ window.SwitchyardScene = (() => {
       seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
       return seed / 4294967296;
     };
-    const ground = ctx.createLinearGradient(0, 0, 240, HEIGHT);
-    ground.addColorStop(0, { '19:20': '#42554b', '21:45': '#33494a', '23:40': '#273b42' }[time]);
-    ground.addColorStop(.48, '#384d41');
-    ground.addColorStop(1, '#273d34');
-    ctx.fillStyle = ground;
+
+    const light = {
+      '19:20': { grass: '#b2c875', shade: '#7fa159', hedge: '#5a8d59', turf: '#d3d89a', sea: '#69adc1', deep: '#46869f', path: '#ddc58d', filter: '#f6cf6f00' },
+      '21:45': { grass: '#c5c483', shade: '#9d9f61', hedge: '#688454', turf: '#dcce9a', sea: '#799cac', deep: '#577a94', path: '#dcc192', filter: '#e2863117' },
+      '23:40': { grass: '#9fb1a2', shade: '#799989', hedge: '#61847c', turf: '#bfc4a3', sea: '#7098ad', deep: '#48768f', path: '#c3b7a0', filter: '#5e72ab18' }
+    }[time];
+    const rim = [[17, 51], [47, 26], [944, 26], [978, 59], [978, 456], [943, 499], [53, 499], [17, 467]];
+    ctx.fillStyle = '#e9d8af';
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    polygon(ctx, [[0, 116], [83, 93], [233, 103], [296, 126], [328, 201], [294, 238], [169, 180], [0, 193]], '#2c4439');
-    polygon(ctx, [[0, 329], [212, 315], [279, 331], [326, 385], [350, 530], [0, 530]], '#263e35');
-    polygon(ctx, [[0, 353], [143, 302], [195, 314], [176, 348], [96, 393], [0, 409]], '#3c4b3d');
-    polygon(ctx, [[444, 17], [974, 17], [979, 147], [765, 157], [701, 142], [435, 163]], '#596051');
-    polygon(ctx, [[430, 449], [930, 427], [987, 461], [987, 530], [400, 530]], '#4b5144');
-    polygon(ctx, [[512, 204], [651, 170], [714, 207], [732, 339], [641, 380], [502, 348]], '#31463c');
-
-    const shore = [[777, 161], [880, 158], [1000, 151], [1000, 382], [879, 380], [798, 363], [752, 324], [749, 219]];
-    const water = ctx.createLinearGradient(746, 157, 1000, 380);
-    water.addColorStop(0, time === '19:20' ? '#586d62' : '#435d64');
-    water.addColorStop(.48, '#344f51');
-    water.addColorStop(1, '#243c47');
-    polygon(ctx, shore, water);
+    for (let j = 0; j < HEIGHT; j += 17) {
+      stroke(ctx, [[0, j], [WIDTH, j]], j % 2 ? '#fff5d536' : '#af926020');
+    }
+    polygon(ctx, rim.map(([x, y]) => [x + 8, y + 17]), '#634b3e44');
+    polygon(ctx, rim.map(([x, y]) => [x, y + 11]), '#836d49');
+    polygon(ctx, rim, light.grass);
     ctx.save();
     ctx.clip();
-    for (let i = 0; i < 220; i++) {
-      const x = 747 + random() * 275;
-      const y = 158 + random() * 226;
-      ctx.fillStyle = i % 7 ? '#91a48621' : '#d3a76e59';
-      ctx.fillRect(x, y, 4 + random() * 34, i % 7 ? 1 : 1.5);
+
+    polygon(ctx, [[14, 26], [390, 26], [339, 83], [263, 119], [152, 117], [14, 136]], light.turf);
+    polygon(ctx, [[18, 348], [137, 334], [199, 360], [303, 383], [347, 490], [331, 505], [0, 505]], light.shade);
+    ctx.fillStyle = light.turf;
+    ctx.beginPath();
+    ctx.moveTo(361, 289);
+    ctx.bezierCurveTo(380, 251, 445, 228, 504, 231);
+    ctx.bezierCurveTo(565, 230, 604, 259, 633, 282);
+    ctx.bezierCurveTo(565, 297, 499, 317, 472, 328);
+    ctx.bezierCurveTo(422, 342, 387, 325, 361, 289);
+    ctx.fill();
+
+    // The right-of-way skirts a small fenced field.
+    const fence = [[384, 282], [429, 265], [473, 256], [523, 257], [566, 267], [598, 283]];
+    stroke(ctx, fence, '#7e774c', 2);
+    stroke(ctx, fence.map(([x,y]) => [x + 2, y + 5]), '#a99c59', 2.5);
+    for (const [x, y] of fence) {
+      stroke(ctx, [[x, y - 4], [x, y + 7]], '#72603f', 3);
+      stroke(ctx, [[x - 1, y - 4], [x - 1, y + 4]], '#e5c178', 1.4);
     }
-    ctx.restore();
-    stroke(ctx, shore, '#162a2a', 5);
-    polygon(ctx, [[758, 220], [922, 218], [955, 244], [955, 298], [909, 325], [766, 322]], '#15282a');
-    polygon(ctx, [[754, 210], [919, 208], [954, 235], [954, 288], [908, 315], [757, 314]], '#686758');
-    stroke(ctx, [[757, 314], [908, 315], [954, 288], [954, 235]], '#a09073', 2);
-    for (let x = 773; x < 920; x += 9) {
-      const y = x < 900 ? 315 : 309;
-      stroke(ctx, [[x, 213], [x, y]], '#262f2d36');
-      if (x < 900) {
-        stroke(ctx, [[x, 316], [x, 325]], '#6f625153', 2);
-        ctx.fillStyle = '#a48a64';
-        ctx.fillRect(x - 2, 309, 4, 5);
+    for (const [x, y] of [[442, 290], [481, 282], [501, 303], [537, 289]]) {
+      crate(ctx, x, y, 14, 8, 5, '#aa8746', '#d7b76d');
+    }
+
+    // Cultivated plots at the back of the railway.
+    const fields = [
+      { x: 30, y: 40, w: 115, h: 52, crop: '#cfb268', row: '#a1864c' },
+      { x: 150, y: 40, w: 110, h: 52, crop: '#a5b86e', row: '#779653' },
+      { x: 37, y: 99, w: 114, h: 40, crop: '#b4bd6b', row: '#7b9855' },
+      { x: 159, y: 98, w: 89, h: 32, crop: '#dbc578', row: '#a89a5b' }
+    ];
+    for (const { x, y, w, h, crop, row } of fields) {
+      polygon(ctx, [[x, y], [x+w, y], [x+w-11, y+h], [x+5, y+h]], crop);
+      for (let i = 0; i < h; i += 5) {
+        stroke(ctx, [[x+3, y+i], [x+w-7-i*.12, y+i]], row, 1.25);
       }
     }
 
-    for (let i = 0; i < 13500; i++) {
-      const x = random() * WIDTH;
-      const y = random() * HEIGHT;
-      if (x > 758 && y > 159 && y < 381) continue;
-      ctx.fillStyle = ['#a1a48314', '#141e1a20', '#c5a7751a', '#68786323'][i % 4];
-      ctx.fillRect(x, y, random() * 3 + 1, random() * 2 + .6);
+    // The painted service lanes turn around the track bed at the three yards.
+    stroke(ctx, [[22, 356], [135, 330], [189, 301], [202, 247], [173, 215]], '#88775678', 21);
+    stroke(ctx, [[22, 354], [135, 328], [189, 299], [201, 246], [173, 215]], light.path, 17);
+    stroke(ctx, [[311, 71], [498, 62], [656, 95], [976, 95]], '#96805b7c', 21);
+    stroke(ctx, [[311, 70], [498, 61], [656, 94], [976, 94]], light.path, 17);
+    stroke(ctx, [[338, 490], [444, 460], [523, 468], [671, 444], [977, 450]], '#8e7b557a', 22);
+    stroke(ctx, [[338, 488], [444, 458], [523, 466], [671, 442], [977, 448]], light.path, 17);
+    stroke(ctx, [[363, 482], [444, 458], [523, 466], [671, 442], [977, 448]], '#fbefc390', 2);
+
+    const shore = [[780, 163], [855, 150], [1000, 152], [1000, 377], [908, 375], [816, 354], [785, 327], [757, 299], [751, 245]];
+    const water = ctx.createLinearGradient(756, 162, 995, 386);
+    water.addColorStop(0, light.sea);
+    water.addColorStop(1, light.deep);
+    polygon(ctx, shore, '#e7d597');
+    polygon(ctx, shore.map(([x, y], i) => [x + (i > 1 && i < 4 ? 0 : 6), y]), water);
+    ctx.save();
+    ctx.clip();
+    for (let i = 0; i < 95; i++) {
+      const x = 755 + random() * 246;
+      const y = 151 + random() * 230;
+      ctx.fillStyle = i % 5 ? '#effbdf36' : '#e7f7f0a0';
+      ctx.fillRect(x, y, 4 + random() * 22, i % 5 ? 1 : 1.25);
     }
-    stroke(ctx, [[-15, 442], [118, 405], [195, 363], [231, 314]], '#2a312b', 25);
-    stroke(ctx, [[-15, 440], [118, 403], [195, 361], [231, 312]], '#5d6050', 22);
-    stroke(ctx, [[438, 68], [518, 52], [995, 53]], '#676958', 22);
-    stroke(ctx, [[391, 501], [568, 481], [995, 485]], '#616152', 20);
-    stroke(ctx, [[420, 501], [572, 482], [995, 485]], '#9c87654d', 1.25);
-
-    for (let i = 0; i < 74; i++) {
-      const x = 3 + random() * 410;
-      const y = 9 + random() * 149;
-      if ((x > 62 && x < 235 && y > 65) || (x > 360 && y > 105)) continue;
-      pine(ctx, x, y, 13 + random() * 23, i % 3);
+    ctx.restore();
+    polygon(ctx, [[757, 219], [909, 215], [943, 243], [943, 308], [918, 327], [757, 324]], '#5e6958');
+    polygon(ctx, [[757, 213], [909, 210], [943, 236], [943, 300], [917, 319], [757, 316]], '#c1ab7e');
+    polygon(ctx, [[771, 221], [905, 219], [931, 240], [931, 296], [911, 312], [771, 311]], '#d0bc95');
+    for (let x = 768; x < 927; x += 12) {
+      stroke(ctx, [[x, 218], [x, 313]], '#655f482b');
+      ctx.fillStyle = '#6f664d';
+      ctx.fillRect(x, 311, 4, 9);
     }
-    for (let i = 0; i < 85; i++) {
-      const x = random() * 405;
-      const y = 380 + random() * 162;
-      if ((x < 158 && y < 435) || x > 337 + (y - 478)) continue;
-      pine(ctx, x, y, 16 + random() * 28, i % 3);
+    polygon(ctx, [[950, 326], [959, 301], [974, 301], [978, 322], [972, 352], [954, 354]], '#20475170');
+    polygon(ctx, [[946, 322], [957, 292], [970, 292], [974, 318], [967, 347], [952, 347]], '#9b4c35');
+    polygon(ctx, [[948, 322], [959, 296], [966, 296], [971, 317], [965, 341], [955, 341]], '#ead5a8');
+    ctx.fillStyle = '#597d7f';
+    ctx.fillRect(953, 326, 13, 8);
+    stroke(ctx, [[961, 294], [945, 280]], '#faf1ce9f', 1);
+
+    // A few short shadows and lines of tall grass give the board its physical scale.
+    for (let i = 0; i < 4300; i++) {
+      const x = 24 + random() * 950;
+      const y = 26 + random() * 470;
+      if ((x > 752 && y > 150 && y < 381) || (x < 272 && y < 141)) continue;
+      ctx.fillStyle = ['#f4edae51', '#65835542', '#e4d4966d', '#6a91393b'][i % 4];
+      ctx.fillRect(x, y, .8 + random() * 2.5, .5 + random() * 1.5);
     }
-    for (let i = 0; i < 21; i++) {
-      const x = 311 + random() * 337;
-      const y = 287 + random() * 71;
-      if (x < 417 && y > 323 || x > 565 && y < 325) continue;
-      pine(ctx, x, y, 10 + random() * 16, i % 3);
+
+    const groves = [
+      { x: 282, y: 76, w: 135, h: 75, n: 23 },
+      { x: 31, y: 420, w: 285, h: 75, n: 56 },
+      { x: 328, y: 359, w: 66, h: 75, n: 12 }
+    ];
+    for (const grove of groves) {
+      const trees = Array.from({ length: grove.n }, (_, i) => [
+        grove.x + random() * grove.w, grove.y + random() * grove.h, 18 + random() * 23, i % 3
+      ]).sort((a, b) => a[1] - b[1]);
+      for (const [x, y, size, shade] of trees) {
+        pine(ctx, x, y, size, shade);
+      }
     }
 
-    // Signal box, a loading mill, and the lower yard warehouse.
-    shed(ctx, 74, 214, 116, 36, { roof: '#7b6451', gable: '#6a5747', wall: '#806e55', rise: 22, height: 41, windows: 5 });
-    shed(ctx, 162, 219, 48, 21, { roof: '#7b6451', wall: '#685e49', rise: 14, height: 20, windows: 1 });
-    ctx.fillStyle = '#40392c';
-    ctx.fillRect(93, 175, 12, 39);
-    ctx.fillStyle = '#a18861';
-    ctx.fillRect(94, 193, 10, 3);
-    ctx.fillRect(94, 202, 10, 2);
-    crate(ctx, 88, 239, 32, 11, 8, '#7c5c42', '#9b7a57');
-    crate(ctx, 123, 240, 17, 10, 10, '#807251', '#a9906a');
-    lamp(ctx, 199, 245);
+    // The three destinations have distinct shapes: silos, a gantry, and loading sheds.
+    shed(ctx, 82, 221, 109, 31, { roof: '#bf6c55', gable: '#955748', wall: '#d3a16c', rise: 23, height: 36, windows: 4 });
+    shed(ctx, 161, 228, 49, 22, { roof: '#d18164', wall: '#e2af76', rise: 15, height: 24, windows: 1 });
+    crate(ctx, 86, 242, 38, 9, 8, '#a96a3c', '#d4ac6d');
+    crate(ctx, 131, 240, 19, 10, 10, '#867133', '#c6a059');
+    lamp(ctx, 207, 243);
 
-    shed(ctx, 690, 95, 211, 38, { roof: '#686359', gable: '#544b3f', wall: '#795949', rise: 18, height: 38, windows: 7 });
-    shed(ctx, 678, 110, 134, 31, { roof: '#80664f', gable: '#745d49', wall: '#805e49', rise: 16, height: 27, windows: 4 });
-    tank(ctx, 535, 103, 19, 53);
-    tank(ctx, 574, 108, 21, 58);
-    tank(ctx, 617, 112, 21, 61);
-    const chimney = [[853, 58], [867, 56], [864, 5], [855, 5]];
-    polygon(ctx, chimney, '#735140');
-    polygon(ctx, [[864, 5], [867, 56], [875, 53], [870, 2]], '#433b36');
-    polygon(ctx, [[854, 3], [870, 1], [875, 4], [855, 7]], '#a88968');
-    lamp(ctx, 666, 122);
-    lamp(ctx, 897, 118);
+    shed(ctx, 688, 111, 194, 31, { roof: '#aa654c', gable: '#93503e', wall: '#d5a87a', rise: 19, height: 35, windows: 7 });
+    shed(ctx, 711, 95, 78, 28, { roof: '#ce8661', gable: '#975948', wall: '#d6b27e', rise: 17, height: 49, windows: 3 });
+    tank(ctx, 526, 104, 21, 49);
+    tank(ctx, 568, 109, 22, 57);
+    tank(ctx, 614, 108, 22, 60);
+    polygon(ctx, [[848, 79], [862, 77], [858, 29], [851, 29]], '#a0553d');
+    polygon(ctx, [[858, 29], [862, 77], [869, 74], [865, 26]], '#7a4034');
+    polygon(ctx, [[850, 27], [864, 24], [869, 28], [852, 31]], '#d0925f');
+    lamp(ctx, 662, 119);
+    lamp(ctx, 896, 115);
+    crate(ctx, 920, 117, 29, 11, 11, '#917644', '#d8b881');
 
-    crane(ctx, 806, 248);
-    crate(ctx, 783, 252, 42, 15, 13, '#936447', '#9e7d57');
-    crate(ctx, 825, 250, 37, 15, 15, '#596d67', '#7d8b76');
-    crate(ctx, 864, 243, 40, 14, 14, '#76694c', '#ada279');
-    crate(ctx, 798, 304, 44, 16, 13, '#83683f', '#b49a6b');
-    crate(ctx, 852, 302, 46, 13, 13, '#6a7771', '#8e9882');
-    lamp(ctx, 914, 299);
+    crane(ctx, 796, 245);
+    crate(ctx, 782, 251, 42, 15, 13, '#b35e44', '#d27d52');
+    crate(ctx, 825, 250, 37, 15, 15, '#4c8485', '#6fa5a3');
+    crate(ctx, 864, 243, 40, 14, 14, '#a78e3c', '#dfb859');
+    crate(ctx, 794, 301, 44, 16, 13, '#a17641', '#cda760');
+    crate(ctx, 847, 306, 46, 13, 13, '#5a8b86', '#91b0a0');
+    lamp(ctx, 911, 302);
 
-    tank(ctx, 592, 476, 19, 31, 'tank');
-    tank(ctx, 633, 480, 21, 34, 'tank');
-    shed(ctx, 710, 386, 98, 23, { roof: '#62685d', wall: '#645d4a', rise: 15, height: 23, windows: 3 });
-    shed(ctx, 779, 501, 135, 32, { roof: '#765b48', gable: '#5b4e41', wall: '#6e5c47', rise: 23, height: 37, windows: 4 });
-    shed(ctx, 925, 496, 70, 25, { roof: '#7f6853', wall: '#71604a', rise: 17, height: 25, windows: 2 });
-    crate(ctx, 705, 457, 47, 19, 12, '#7c6249', '#ac9270');
-    crate(ctx, 704, 479, 47, 19, 12, '#677971', '#86928c');
-    lamp(ctx, 754, 444);
-    lamp(ctx, 913, 460);
+    shed(ctx, 692, 382, 101, 26, { roof: '#689497', gable: '#4b7575', wall: '#d9aa72', rise: 18, height: 29, windows: 3 });
+    shed(ctx, 768, 473, 134, 31, { roof: '#bd704f', gable: '#984739', wall: '#e0b57b', rise: 25, height: 29, windows: 4 });
+    shed(ctx, 897, 467, 61, 24, { roof: '#65918a', gable: '#487567', wall: '#aaad73', rise: 15, height: 26, windows: 2 });
+    crate(ctx, 683, 436, 43, 18, 11, '#8f6041', '#cba176');
+    crate(ctx, 693, 462, 43, 17, 11, '#558083', '#85aaa7');
+    tank(ctx, 571, 452, 19, 30, 'tank');
+    tank(ctx, 612, 457, 21, 34, 'tank');
+    lamp(ctx, 752, 437);
+    lamp(ctx, 909, 437);
     lamp(ctx, 454, 432);
-    lamp(ctx, 82, 329);
+    lamp(ctx, 84, 319);
 
-    const edge = ctx.createRadialGradient(500, 263, 255, 500, 263, 580);
-    edge.addColorStop(0, '#0f201900');
-    edge.addColorStop(1, time === '19:20' ? '#141e1d62' : '#0b172783');
-    ctx.fillStyle = edge;
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    // Flowers in open grass clear the track approaches.
+    for (let i = 0; i < 66; i++) {
+      const x = 385 + random() * 175;
+      const y = 287 + random() * 35;
+      ctx.fillStyle = i % 3 ? '#faf2c1' : '#d69c50';
+      ctx.fillRect(x, y, 2, 2);
+    }
+    if (time !== '19:20') {
+      ctx.fillStyle = light.filter;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    }
+    ctx.restore();
+    stroke(ctx, [[18, 465], [54, 497], [943, 497], [978, 457]], '#6c603c91', 2);
+    stroke(ctx, [[19, 52], [47, 27], [943, 27], [977, 59]], '#f5e9b980', 2);
   }
 
   function carriage(ctx, line, distance, car) {
@@ -419,11 +465,11 @@ window.SwitchyardScene = (() => {
       ctx.fillRect(-12, -7, 39, 22);
       ctx.fillStyle = '#141b19';
       ctx.fillRect(-9, -10, 31, 21);
-      ctx.fillStyle = '#416263';
+      ctx.fillStyle = '#b65437';
       ctx.fillRect(-9, -9, 29, 17);
-      ctx.fillStyle = '#628d85';
+      ctx.fillStyle = '#d27d4d';
       ctx.fillRect(-8, -9, 13, 17);
-      ctx.fillStyle = '#7ba69a';
+      ctx.fillStyle = '#f1ba69';
       ctx.fillRect(-8, -9, 25, 3);
       ctx.fillStyle = '#c9ba72';
       ctx.fillRect(3, -5, 4, 12);
@@ -492,15 +538,15 @@ window.SwitchyardScene = (() => {
         }
       }
       const all = Object.values(tracks);
-      all.forEach(line => trace(base, line, after ? '#121e19' : '#d8e2eb', after ? 32 : 24));
+      all.forEach(line => trace(base, line, after ? '#635442ac' : '#d8e2eb', after ? 29 : 24));
       if (after) {
-        all.forEach(line => trace(base, line, '#393b31', 25));
+        all.forEach(line => trace(base, line, '#a59674', 23));
         all.forEach(line => ties(base, line));
         all.forEach(line => {
           trace(base, line, '#1c211b', 4, -6);
           trace(base, line, '#1c211b', 4, 6);
-          trace(base, line, '#909087', 1.65, -6);
-          trace(base, line, '#909087', 1.65, 6);
+          trace(base, line, '#d5c9a8', 1.65, -6);
+          trace(base, line, '#d5c9a8', 1.65, 6);
         });
       } else {
         all.forEach(line => trace(base, line, '#6d879d', 4));
@@ -523,10 +569,10 @@ window.SwitchyardScene = (() => {
         const arrived = mode === 'arrived';
         if (after) {
           const stop = bad || isClosed;
-          const tint = stop ? '#e16b4a35' : arrived ? '#a9d5ae60' : '#f9be6436';
-          const mark = stop ? '#e78e76' : arrived ? '#d1edb7' : '#ffdc88';
-          trace(ctx, paintLine, tint, 26);
-          trace(ctx, paintLine, mark, 2.4, 0, mode === 'moving' ? [] : [5, 9]);
+          const tint = stop ? '#883b32a9' : arrived ? '#387459ac' : '#1c627a9e';
+          const mark = stop ? '#ffe2c3' : arrived ? '#e4ffd9' : '#fff7c7';
+          trace(ctx, paintLine, tint, 18);
+          trace(ctx, paintLine, mark, 2.8, 0, mode === 'moving' ? [] : [5, 9]);
           signal(ctx, 213, 254, !stop);
           signal(ctx, 435, 119, !stop && route.approach === 'North');
           signal(ctx, 435, 422, !stop && route.approach === 'South');

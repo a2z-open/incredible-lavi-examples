@@ -18,10 +18,10 @@ const demos = [
     notes: "The redesign keeps the queue and the current incident in view together on wide screens. Compare how quickly you can switch incidents, confirm who owns one and resume from its history."
   },
   {
-    slug: "ferry", title: "Ferry Dispatch", medium: "Earlier audit",
+    slug: "ferry", title: "Ferry Dispatch", medium: "Transit website",
     summary: "Find the next sailing after a cancellation.",
     task: "You're waiting at Pier 1. Which boat can you take next, and what happened to the cancelled sailing?",
-    notes: "These are the original independent audit builds. The enhanced view adds a countdown and gives cancellations a detail view. Try switching piers. Both versions retain a system-wide departure callout, which can be mistaken for the filtered pier's next boat."
+    notes: "The current board gives the selected pier its own next departure. Compare the times on Pier 1 with the quay-wide view, and open a cancelled sailing for the caller summary."
   }
 ];
 
@@ -32,12 +32,11 @@ if (gallery) {
   gallery.innerHTML = demos.map(demo => `
     <article class="exhibit">
       <a class="exhibit-link" href="compare.html?demo=${demo.slug}" aria-label="Compare ${demo.title}">
-        <div class="pair" aria-hidden="true">
-          <figure><img src="assets/${demo.slug}-before.webp" alt="" width="700" height="416"><figcaption>Before</figcaption></figure>
-          <figure><img src="assets/${demo.slug}-after.webp" alt="" width="700" height="416"><figcaption>After</figcaption></figure>
+        <div class="preview">
+          <img src="assets/${demo.slug}-after.webp" alt="" width="700" height="416">
         </div>
         <div class="exhibit-info">
-          <div><p class="medium">${demo.medium}</p><h2>${demo.title}</h2><p>${demo.summary}</p></div>
+          <div><h2>${demo.title}</h2><p class="category">${demo.medium}</p><p>${demo.summary}</p></div>
           <span class="arrow" aria-hidden="true">↗</span>
         </div>
       </a>

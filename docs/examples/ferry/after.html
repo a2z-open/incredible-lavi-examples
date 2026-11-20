@@ -1,211 +1,386 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101c24">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f2e8">
 <title>Munro Quay · Departure board</title>
 <style>
-:root{color-scheme:dark;--ink:#101c24;--panel:#14242d;--line:#34434a;--paper:#edf1e8;--soft:#a9b8b9;--mint:#b8ead6;--green:#98e2bd;--gold:#ffd390;--red:#ffb0a8;--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-*{box-sizing:border-box}
-body{margin:0;background:var(--ink);color:var(--paper);font:16px/1.35 var(--sans);-webkit-font-smoothing:antialiased}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible{outline:3px solid #ffe6a2;outline-offset:3px;z-index:1}
-.wrap{width:min(1180px,calc(100% - 96px));margin:auto}
-.mast{border-bottom:1px solid var(--line)}
-.mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;height:83px}
-.brand,.mast-title,.clock,.panel-top,.hero-small,.state,.times,.tabs,.detail-top,.detail-bottom{display:flex;align-items:center}
-.brand{gap:16px}.brand svg{width:44px;height:44px;flex:none}
-.mast-title{gap:22px}
-h1,h2,h3,p{margin:0}
-h1{font-size:24px;font-weight:680;letter-spacing:-1px}
-.mast-title p{font-size:14px;color:var(--soft);border-left:1px solid #536269;padding-left:22px}
-.clock{gap:18px}.clock .date{text-align:right;font-size:13px;color:#dce4dc}
-.clock .zone{display:block;font:10px/1.8 var(--mono);letter-spacing:1px;color:var(--soft);text-transform:uppercase}
-.clock .readout{font:500 32px/1 var(--mono);letter-spacing:-2px}
-main{padding:27px 0 22px}
-.hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;min-height:184px;padding:24px 32px;background:#c2ead8;color:#102e30;border-radius:5px}
-.hero:after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px #eaffeb55;border-radius:inherit}
-.hero-info{position:relative;z-index:1;min-width:0}
-.hero-small,.eyebrow,.dayline,.colheads,.detail-kicker{font:600 10px/1.2 var(--mono);letter-spacing:1.25px;text-transform:uppercase}
-.hero-small{gap:9px;color:#294841;font-size:11px}
-.hero-small i{height:10px;width:10px;display:inline-block;background:#1c5145;border-radius:50%;box-shadow:inset 0 0 0 3px #b1ddc9;border:1px solid #275746}
-.hero h2{display:flex;gap:22px;align-items:baseline;margin:12px 0 14px;font-size:clamp(31px,3.2vw,50px);font-weight:640;letter-spacing:-.054em;line-height:1.03}
-.hero h2 time{font:550 clamp(46px,5.5vw,76px)/.98 var(--mono);letter-spacing:-.085em}
-.hero-meta{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:580}
-.hero-meta .pipe{width:1px;height:12px;background:#82aa98}
-.pill-dark{padding:4px 9px;border-radius:3px;background:#163f38;color:#dff4dc;font-size:12px;font-weight:650}
-.hero-art{position:absolute;z-index:0;right:0;bottom:0;width:37%;height:100%;color:#29594f}
-.panel-top{justify-content:space-between;gap:18px;margin:25px 0 16px}
-.panel-title{display:flex;align-items:baseline;gap:13px}
-.panel-title h2{font-size:24px;letter-spacing:-.9px;font-weight:620}
-.sailing-count{color:var(--soft);font:12px var(--mono)}
-.tabs{gap:3px;background:#0d171e;border:1px solid var(--line);border-radius:5px;padding:3px}
-.tabs button{background:transparent;border:0;border-radius:3px;color:var(--soft);padding:7px 14px;font-size:13px;white-space:nowrap}
-.tabs button[aria-pressed=true]{background:#dbe4d8;color:#182c2c;font-weight:650}
-.tabs button:hover:not([aria-pressed=true]){background:#23343c;color:var(--paper)}
-.schedule{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--panel)}
-.grid{display:grid;grid-template-columns:minmax(95px,.8fr) minmax(165px,1.72fr) minmax(82px,.68fr) minmax(180px,1.65fr) 16px;align-items:center;column-gap:18px;padding-inline:23px}
-.colheads{background:#192b34;height:31px;color:#b6c4c2;font-weight:500;font-size:9px}
-.dayline{display:flex;align-items:center;gap:12px;min-height:25px;padding:4px 23px;background:#20313a;color:#d2dfda;font-size:9px;letter-spacing:1px}
-.dayline:after{content:"";flex:1;border-bottom:1px solid #43545b}
-.row{width:100%;min-height:55px;background:transparent;border:0;border-bottom:1px solid #2d3e46;text-align:left;position:relative}
-.row:last-child{border-bottom:0}
-.row:focus-visible{outline-offset:-3px}.row:hover{background:#1d3139}
-.row .sched{font:500 21px/1.1 var(--mono);letter-spacing:-1.2px}
-.dest{font-weight:575;font-size:17px;letter-spacing:-.35px}.dest small{display:none}
-.pier{font:13px var(--mono);color:#c8d4d2}
-.row.boarding{background:#1a3335;box-shadow:inset 3px 0 #9bdfb9}
-.row.boarding:hover{background:#20403f}
-.status{min-width:0}.state{gap:7px;font-weight:550;font-size:13px}
-.state .glyph{display:inline-flex;justify-content:center;align-items:center;width:15px;height:15px;flex:none}
-.glyph svg{display:block;overflow:visible;width:100%;height:100%;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.delayed .state{color:var(--gold)}.cancelled .state{color:var(--red)}.boarding .state{color:var(--green)}.normal .state{color:#c6d3d0}
-.sub{display:block;font:12px/1.4 var(--sans);color:var(--soft);margin-left:22px;margin-top:2px}
-.arrow{justify-self:end;width:7px;height:7px;border:solid #81969a;border-width:1.5px 1.5px 0 0;transform:rotate(45deg)}
-footer{margin-top:13px;color:var(--soft);font:11px/1.4 var(--mono);display:flex;align-items:center;gap:7px}
-footer svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.25}
-dialog{width:min(430px,calc(100% - 32px));padding:0;border:1px solid #506b70;border-radius:7px;background:#172a33;color:var(--paper);box-shadow:0 16px 80px #0009}
-dialog::backdrop{background:rgb(4 12 17/.74)}
-.detail{padding:24px}
-.detail-top{justify-content:space-between;gap:12px}.detail-kicker{color:var(--soft)}
-.close{width:35px;height:35px;background:none;border:1px solid #455b61;border-radius:4px;line-height:1;font-size:22px}
-.detail h2{font-size:32px;line-height:1.15;letter-spacing:-1.3px;margin:9px 0}
-#detail-meta{color:#b5c6c3;font:12px/1.5 var(--mono)}
-#detail-state{margin:15px 0 18px}.detail .state{font-size:15px}
-.summary{border-top:1px solid #42545a;padding-top:17px}
-.summary h3{font-size:13px;margin-bottom:6px}
-#summary-text{font-size:16px;line-height:1.55}
-.detail-bottom{margin-top:20px;gap:12px}.copy{background:var(--mint);color:#102e30;border:0;border-radius:4px;font-size:13px;font-weight:650;padding:10px 14px}
-#feedback{font-size:12px;color:var(--mint)}
-@media(min-width:900px) and (max-height:830px){.mast .wrap{height:66px}main{padding-top:18px}.hero{min-height:148px;padding-block:18px}.row{min-height:47px}.panel-top{margin:17px 0 11px}}
-@media(max-width:900px){.wrap{width:calc(100% - 46px)}.grid{grid-template-columns:.8fr 1.55fr .7fr 1.7fr 8px;column-gap:12px;padding-inline:18px}.dayline{padding-inline:18px}.hero-art{width:36%}.hero{padding:23px;min-height:155px}.hero h2{gap:15px}.clock{gap:12px}}
-@media(max-width:640px){
- .wrap{width:calc(100% - 28px)}.mast .wrap{height:68px}.brand{gap:9px}.brand svg{width:32px;height:32px}.mast-title{display:block}h1{font-size:20px;letter-spacing:-.7px}.mast-title p{padding:0;border:0;font-size:11px;margin-top:1px}
- .clock{flex-direction:column-reverse;align-items:flex-end;gap:2px}.clock .readout{font-size:23px;letter-spacing:-1px}.clock .date{font-size:10px}.clock .zone{display:none}main{padding:13px 0}
- .hero{min-height:136px;padding:15px 15px}.hero h2{display:block;margin:7px 0 9px;font-size:22px;letter-spacing:-.7px}.hero h2 time{display:block;margin-bottom:4px;font-size:40px;letter-spacing:-2.6px}
- .hero-small{font-size:9px;letter-spacing:.8px;gap:5px}.hero-small i{height:8px;width:8px}.hero-meta{gap:7px;font-size:11px}.pill-dark{font-size:10px;padding:3px 6px}.hero-art{width:49%;height:100%;bottom:5%}
- .panel-top{display:block;margin:17px 0 9px}.panel-title{justify-content:space-between}.panel-title h2{font-size:20px}.sailing-count{font-size:10px}
- .tabs{margin-top:9px;gap:2px}.tabs button{flex:1;font-size:13px;min-height:40px;padding:7px 3px}
- .grid{grid-template-columns:47px minmax(0,.88fr) minmax(0,1.1fr) 5px;column-gap:7px;padding-inline:10px}
- .colheads{height:26px;font-size:9px;letter-spacing:.35px}.colheads span span{display:none}.colheads>span:first-child:after{content:"."}.colheads .pier-head,.row .pier{display:none}
- .dayline{min-height:22px;padding:4px 10px;font-size:9.5px;letter-spacing:.55px}.row{min-height:54px}
- .row .sched{font-size:16px;letter-spacing:-.9px}.dest{font-size:15px;line-height:1.25}.dest small{display:block;font:10px/1.3 var(--mono);letter-spacing:0;color:#a9b8b9;margin-top:3px}.state{font-size:12px;gap:4px}.state .glyph{width:12px;height:12px}.sub{margin-left:16px;font-size:11.5px;line-height:1.25}.arrow{height:5px;width:5px}footer{font-size:10px;margin-top:9px}
+:root {
+  color-scheme: light;
+  --paper: #f5f2e8;
+  --ink: #182832;
+  --muted: #515c60;
+  --line: #c9cbc0;
+  --blue: #164eaa;
+  --poster: #204fa9;
+  --cream: #fff6db;
+  --orange: #ff8a5a;
+  --font: "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
-@media(max-width:355px){.wrap{width:calc(100% - 18px)}.grid{grid-template-columns:41px minmax(0,1fr) minmax(0,1fr) 4px;gap:5px;padding-inline:8px}.row .sched{font-size:15px}.hero-art{width:43%}.dest{font-size:13px}.state{font-size:10.5px}}
+* {box-sizing:border-box}
+body {margin:0; background:var(--paper); color:var(--ink); font:16px/1.4 var(--font); -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums}
+h1,h2,h3,p {margin:0}
+button {font:inherit; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent}
+button:focus-visible {outline:3px solid var(--blue); outline-offset:3px; z-index:1}
+.frame {max-width:1440px; margin-inline:auto; padding-inline:clamp(22px,4.375vw,76px)}
+.topbar .frame {display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:90px}
+.topbar {border-bottom:1px solid #abb0a6}
+.brand {display:flex; align-items:center; gap:15px; font-size:28px; font-weight:720; letter-spacing:-.04em; line-height:1}
+.brand svg {width:47px; height:43px; flex:none}
+.clock {display:grid; grid-template-columns:auto auto; column-gap:18px; align-items:center; font-size:13px; text-align:right; line-height:1.35}
+.clock-label {display:block; color:var(--muted); font-size:12px}
+.clock time {font-size:35px; line-height:1; font-weight:550; letter-spacing:-.055em}
+.toolbar {display:flex; justify-content:space-between; align-items:center; gap:20px; padding:27px 0 24px}
+h1 {font-size:clamp(31px,3.55vw,49px); font-weight:650; letter-spacing:-.042em; line-height:1.05}
+.filters {display:flex; gap:2px; padding:3px; background:#e8e7db; border:1px solid #c8cabd; border-radius:5px}
+.filters button {background:none; border:0; border-radius:3px; min-height:36px; padding:5px 17px; color:#384846; font-size:14px; font-weight:550; white-space:nowrap}
+.filters button:hover {background:#d9ded5}
+.filters button[aria-pressed=true] {background:var(--blue); color:#fff; font-weight:660}
+.layout {display:grid; grid-template-columns:minmax(280px,.91fr) minmax(0,1.85fr); gap:clamp(26px,3.65vw,57px); align-items:start}
+.poster {position:relative; overflow:hidden; isolation:isolate; background:var(--poster); color:var(--cream); display:flex; flex-direction:column; align-self:stretch; min-width:0}
+.poster-info {position:relative; z-index:1; padding:26px 25px 0}
+.poster-label {font-size:16px; font-weight:600; letter-spacing:-.018em; margin-bottom:35px}
+.pier-sign {position:absolute; right:23px; top:24px; text-align:center; display:grid; justify-items:center; gap:0; color:var(--cream); line-height:1; border:1.5px solid #b2c5de; border-radius:3px; padding:6px 10px 4px; min-width:46px}
+.pier-sign span {font-size:12px; font-weight:620}
+.pier-sign b {font-size:29px; font-weight:690; line-height:1.03}
+.hero-time {font-size:clamp(67px,6.55vw,102px); font-weight:590; letter-spacing:-.045em; line-height:1; display:block; margin-left:-.04em}
+.hero-when {font-size:14px; color:#dce7ff; margin-top:4px; font-weight:500}
+.hero-to {font-size:clamp(31px,3.18vw,48px); line-height:1.08; font-weight:620; letter-spacing:-.035em; margin:23px 0 7px}
+.hero-state {display:flex; align-items:center; gap:7px; font-size:14px; font-weight:550; line-height:1.35}
+.icon {width:16px; height:16px; display:inline-block; vertical-align:middle; flex:none; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.hero-state .icon {width:17px; height:17px}
+.poster .open-detail {position:relative; z-index:1; align-self:flex-start; margin:17px 0 0 25px; display:inline-flex; align-items:center; gap:9px; color:var(--cream); font-size:13px; font-weight:550; background:transparent; border:none; border-bottom:1px solid #a7bde1; padding:4px 0}
+.poster .open-detail:focus-visible {outline-color:var(--cream)}
+.poster .open-detail:hover {border-bottom-color:var(--cream)}
+.open-detail .icon {width:12px; height:12px}
+.art {display:block; width:100%; margin-top:auto; min-height:115px; overflow:hidden; aspect-ratio:400/151; max-height:196px}
+.art svg.mobile-art {display:none}
+.art svg {display:block; width:100%; height:100%}
+.timetable {min-width:0}
+.schedule-title {display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:1px 0 16px; border-bottom:2px solid var(--ink)}
+.schedule-title h2 {font-size:26px; font-weight:640; letter-spacing:-.04em; line-height:1.15}
+#count {font-size:13px; color:var(--muted); white-space:nowrap}
+.grid {display:grid; grid-template-columns: minmax(64px,.68fr) minmax(112px,1.25fr) minmax(43px,.46fr) minmax(119px,1.1fr) 10px; column-gap:12px; align-items:center}
+.mobile-col-name {display:none}
+.columns {font-size:12px; color:var(--muted); font-weight:550; min-height:32px}
+.dayline {font-size:12px; font-weight:650; display:flex; align-items:center; gap:12px; color:var(--blue); line-height:1.3; padding:5px 0; background:var(--paper)}
+.dayline:after {content:""; flex:1; border-bottom:1px solid #a0b3be}
+.group + .group {margin-top:9px}
+.row {appearance:none; width:100%; border:0; border-bottom:1px solid var(--line); background:transparent; text-align:left; position:relative; min-height:55px; padding:6px 0; line-height:1.22}
+.row:hover {background:#e8ece3}
+.row:focus-visible {outline-offset:1px}
+.sched {font-size:21px; font-weight:550; letter-spacing:-.028em}
+.dest {font-size:clamp(16px,1.42vw,20px); font-weight:610; letter-spacing:-.032em}
+.dest small {display:none}
+.pier {font-size:14px; font-weight:490}
+.status-line {display:inline-flex; align-items:center; gap:6px; font-size:13px; line-height:1.25; font-weight:650}
+.normal .status-line {font-weight:500; color:#41514d}
+.delayed .status-line {color:#824200}
+.cancelled .status-line {color:#a13627}
+.boarding .status-line {color:var(--blue)}
+.status .sub {display:block; padding-left:22px; font-size:12px; color:var(--muted); margin-top:2px; line-height:1.3}
+.row-arrow {width:8px; height:13px; color:#67736f; justify-self:end}
+footer {margin:18px 0 23px; color:var(--muted); display:flex; align-items:center; justify-content:flex-end; gap:7px; font-size:12px}
+footer .icon {width:14px; height:14px}
+.symbols {width:0; height:0; position:absolute; overflow:hidden}
+dialog {width:min(427px,calc(100% - 30px)); padding:0; max-height:calc(100% - 32px); overflow:auto; color:var(--ink); background:var(--paper); border:0; border-top:7px solid var(--poster); box-shadow:0 16px 64px #16273940}
+dialog::backdrop {background:#18293378}
+.detail {padding:18px 24px 24px}
+.detail-top {display:flex; align-items:center; justify-content:space-between; gap:16px}
+.detail-kicker {display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; color:var(--blue)}
+.detail-kicker .icon {width:19px; height:19px}
+.close {width:42px; height:42px; margin-right:-9px; display:grid; place-items:center; border:0; background:transparent; border-radius:3px}
+.close:hover {background:#e8e7db}
+.close .icon {width:20px; height:20px}
+.detail h2 {font-size:36px; font-weight:640; letter-spacing:-.045em; line-height:1.08; margin:12px 0 13px}
+.detail-meta {display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:13px 0; border-block:1px solid var(--line)}
+.detail-meta dt {font-size:12px; color:var(--muted)}
+.detail-meta dd {font-size:18px; margin:2px 0 0; font-weight:550; letter-spacing:-.02em}
+.detail-meta dd span {display:block; font-size:12px; color:var(--muted); font-weight:400; margin-top:2px; letter-spacing:0}
+#detail-state {margin:13px 0 23px}
+.summary h3 {font-size:17px; letter-spacing:-.025em; margin-bottom:6px}
+#summary-text {font-size:16px; line-height:1.55}
+.detail-bottom {display:flex; align-items:center; gap:12px; margin-top:20px}
+.copy {display:flex; align-items:center; gap:8px; min-height:42px; padding:8px 13px; color:#fff; border:0; border-radius:3px; background:var(--blue); font-size:14px; font-weight:600}
+.copy:hover {background:#133d89}
+#feedback {font-size:13px; color:var(--blue)}
+@media(min-width:1000px) and (min-height:830px) {
+  .toolbar {padding-block:32px}
+  .row {min-height:64px}
+}
+@media(max-width:950px) and (min-width:721px) {
+  .frame {padding-inline:24px}
+  .layout {grid-template-columns:minmax(225px,.74fr) minmax(0,1.65fr); gap:22px}
+  .poster-info {padding:20px 16px 0}
+  .poster .open-detail {margin-left:16px}
+  .pier-sign {right:14px; top:16px; min-width:39px; padding:5px 7px 3px}
+  .poster-label {font-size:14px}
+  .hero-to {font-size:29px}
+  .hero-time {font-size:64px}
+  .grid {grid-template-columns:56px minmax(89px,1.12fr) 34px minmax(104px,1fr) 7px; gap:7px}
+  .status .sub {padding-left:0}
+  .pier {font-size:13px}
+  .row {min-height:56px}
+}
+@media(max-width:720px) {
+  .frame {padding-inline:clamp(14px,4vw,24px)}
+  .topbar .frame {min-height:65px}
+  .brand {gap:9px; font-size:22px}
+  .brand svg {width:33px; height:31px}
+  .clock {display:flex; flex-direction:column-reverse; align-items:flex-end; gap:3px; font-size:12px; line-height:1.15}
+  .clock-label {display:none}
+  .clock time {font-size:23px; letter-spacing:-.04em}
+  .toolbar {display:grid; gap:10px; padding:15px 0 12px}
+  h1 {font-size:31px}
+  .filters {justify-self:start}
+  .filters button {min-height:35px; padding-inline:16px; font-size:13px}
+  .layout {grid-template-columns:1fr; gap:17px}
+  .poster {min-height:179px; display:block; padding-bottom:16px}
+  .poster-info {padding:13px 15px 0}
+  .poster-label {font-size:13px; margin-bottom:8px}
+  .pier-sign {top:13px; right:14px; min-width:37px; padding:4px 6px 3px}
+  .pier-sign span {font-size:12px}
+  .pier-sign b {font-size:24px}
+  .hero-time {font-size:50px}
+  .hero-when {font-size:12px; margin-top:1px}
+  .hero-to {font-size:26px; margin:10px 0 3px}
+  .hero-state {font-size:12px; gap:4px}
+  .hero-state .icon {width:14px; height:14px}
+  .poster-label:after {content:" →"; margin-left:3px}
+  .poster .open-detail {position:absolute; inset:0; width:100%; height:100%; z-index:2; margin:0; border:0; padding:0; font-size:0}
+  .poster .open-detail .icon {display:none}
+  .poster .open-detail:focus-visible {outline-offset:-4px}
+  .art {position:absolute; inset:auto 0 0; width:100%; height:100px; min-height:0; max-height:none; aspect-ratio:auto; z-index:0; pointer-events:none}
+  .art svg.desktop-art {display:none}
+  .art svg.mobile-art {display:block}
+  .schedule-title {padding:0 0 7px}
+  .schedule-title h2 {font-size:22px}
+  #count {font-size:12px}
+  .full-col-name {display:none}
+  .mobile-col-name {display:inline}
+  .columns {min-height:29px; font-size:12px}
+  .grid {grid-template-columns:54px minmax(85px,1fr) minmax(125px,1.15fr) 7px; gap:7px}
+  .row {min-height:48px; padding-block:5px}
+  .row .pier,.columns .pier-col {display:none}
+  .sched {font-size:16px; letter-spacing:-.035em}
+  .dest {font-size:15px; line-height:1.22; letter-spacing:-.025em}
+  .dest small {display:block; font-size:12px; line-height:1.3; font-weight:480; color:var(--muted); letter-spacing:0; margin-top:2px}
+  .dayline {font-size:12px; padding:3px 0}
+  .group + .group {margin-top:6px}
+  .status-line {font-size:12px; gap:4px}
+  .status-line .icon {width:13px; height:13px}
+  .status .sub {font-size:12px; padding-left:17px; margin-top:2px}
+  footer {margin:11px 0 18px; justify-content:flex-start; font-size:11px}
+}
+@media(min-width:470px) and (max-width:720px) {
+  .toolbar {display:flex}
+  h1 {font-size:27px}
+  .filters button {padding-inline:11px}
+  .art {width:100%; height:116px}
+  .row {min-height:52px}
+  .grid {grid-template-columns:64px minmax(95px,1.1fr) 42px minmax(100px,1fr) 7px}
+  .row .pier,.columns .pier-col {display:block}
+  .dest small {display:none}
+}
+@media(max-width:374px) {
+  .frame {padding-inline:12px}
+  .grid {grid-template-columns:48px minmax(86px,1fr) minmax(114px,1.17fr) 6px; gap:6px}
+  .art {height:91px}
+}
 </style>
 </head>
 <body>
-<header class="mast"><div class="wrap">
- <div class="brand">
-  <svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect width="44" height="44" rx="4" fill="#BEE6D4"/><g fill="#143D3A"><path d="m6 23 6-13 7 10 4-10 7 10 5-10h3l-7 20-8-10-4 11-7-11-3 7z"/><path d="M6 33c4-4 7 2 11-1s7 2 11-1 7 1 10-2v3c-4 3-6-1-10 2s-7-2-11 1-7-2-11 1z"/></g></svg>
-  <div class="mast-title"><h1>Munro Quay</h1><p>Departure board</p></div>
- </div>
- <div class="clock"><div class="date">Saturday, 14 March<span class="zone">Local time</span></div><time class="readout" datetime="23:42" aria-label="Local time 23:42">23:42</time></div>
+<svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="i-delay" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.1"/><path d="M10 5.6v4.8l2.7 1.8"/></symbol>
+  <symbol id="i-cancel" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.1"/><path d="m7.5 7.5 5 5m0-5-5 5"/></symbol>
+  <symbol id="i-boarding" viewBox="0 0 20 20"><path d="M2 10h11m-4-4 4 4-4 4m7-10v12"/></symbol>
+  <symbol id="i-normal" viewBox="0 0 20 20"><path d="m3.9 10.4 3.9 3.8 8-8.6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M3 10h13m-5-5 5 5-5 5"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 9 14"><path d="m2 2 5 5-5 5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 20 20"><path d="m4 4 12 12m0-12L4 16"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 20 20"><path d="M7 7h10v11H7zM3 13V3h10"/></symbol>
+  <symbol id="i-ship" viewBox="0 0 20 20"><path d="M4 11V6h12v5m-9-5V3h6v3M2 12l8-2 8 2-3 4H5zM2 18h16"/></symbol>
+</svg>
+<header class="topbar"><div class="frame">
+  <div class="brand"><svg aria-hidden="true" viewBox="0 0 50 44" fill="none"><path d="M3 2h4v22H3z" fill="#183e7f"/><path d="M7 3h37L31 11l13 8H7z" fill="#2053a9"/><path d="M7 3h12l9 16H16z" fill="#ff8555"/><g stroke="#2053a9" stroke-width="3.7"><path d="M2 29c5 0 6-4 11-4s6 4 11 4 6-4 11-4 6 4 12 4M2 38c5 0 6-4 11-4s6 4 11 4 6-4 11-4 6 4 12 4"/></g></svg><span>Munro Quay</span></div>
+  <div class="clock"><div>Saturday, 14 March<span class="clock-label">Local time</span></div><time datetime="23:42" aria-label="Local time 23:42">23:42</time></div>
 </div></header>
-<main class="wrap">
- <section class="hero" aria-labelledby="next">
-  <div class="hero-info">
-   <div class="hero-small"><i aria-hidden="true"></i>Next departure · In 13 min</div>
-   <h2 id="next"><time datetime="23:55">23:55</time><span>Alder Point</span></h2>
-   <div class="hero-meta"><span class="pill-dark">Boarding</span><span>Pier 3</span><span class="pipe"></span><span>On time</span></div>
+<main class="frame">
+  <div class="toolbar"><h1>Departure board</h1><div class="filters" role="group" aria-label="Filter departures by pier">
+    <button type="button" data-pier="0" aria-pressed="true">All piers</button><button type="button" data-pier="1" aria-pressed="false">Pier 1</button><button type="button" data-pier="2" aria-pressed="false">Pier 2</button><button type="button" data-pier="3" aria-pressed="false">Pier 3</button>
+  </div></div>
+  <div class="layout">
+    <section class="poster" aria-labelledby="next">
+      <div class="poster-info"><h2 class="poster-label" id="next">Next departure</h2>
+        <div class="pier-sign"><span>Pier</span><b id="next-pier"></b></div>
+        <time class="hero-time" id="next-time"></time><p class="hero-when" id="next-when"></p>
+        <h3 class="hero-to" id="next-to"></h3><p class="hero-state" id="next-state"></p>
+      </div>
+      <button type="button" class="open-detail">Sailing details <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <div class="art" aria-hidden="true">
+        <svg class="desktop-art" viewBox="0 0 400 151" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <defs><pattern id="windows" x="0" y="0" width="12" height="9" patternUnits="userSpaceOnUse"><rect x="1" y="0" width="8" height="8" rx="1" fill="#244f77"/></pattern></defs>
+          <g fill="#81ade2"><path d="M29 74h38v2H29zM48 69h31v2H48zM299 47h35v2h-35zM318 42h28v2h-28z"/></g>
+          <g fill="#8ab2e2"><path d="M22 100c29-5 41-13 63-13 25 0 44 9 63 6 30-5 52-19 81-16 44 5 63 17 101 16 25 0 47-4 70-10v30H0v-11z"/></g>
+          <path d="M0 107c55 0 91-3 139-2 81 1 111-6 171-6 28 0 54 0 90-2v54H0z" fill="#b5d4ec"/>
+          <path d="M0 119c35-2 64-1 99-3 105 0 176-4 248-5 25-1 40 0 53 1v39H0z" fill="#477dbb"/>
+          <g transform="translate(27 -4)"><g id="vessel">
+            <g stroke="#ffefcf" stroke-width="1.9" fill="none"><path d="M178 67V23m-6 8 14-2m-7-6 7-2m-8 12-17 32m17-32 12 28"/></g>
+            <path d="m178 22 17 2-16 6z" fill="#ff8956"/>
+            <path d="m98 64-4-18h19l7 18zm24 0-4-21h19l7 21z" fill="#ff8956"/><path d="m94 46-1-5h19l1 5zm24-3-1-5h19l1 5z" fill="#182f4f"/>
+            <path d="M74 76 83 62l122-2 10-13 38-1 14 19 6 13z" fill="#fff0ce"/>
+            <path d="m211 59 6-9h11v9zm19-9h9l5 9h-14zm12 0h8l8 9h-11z" fill="#244f77"/>
+            <path d="m88 66 165-2 6 7-176 3z" fill="#244f77"/>
+            <path d="m102 65-4 10m17-10-4 10m17-10-4 10m17-10-4 10m17-10-3 10m17-10-3 10m17-10-3 10m17-10-3 10m17-11-2 10m15-10 1 9m13-9 2 9" fill="none" stroke="#fff0ce" stroke-width="3.4"/>
+            <path d="m52 83 10-9 193-3 20 7 5 8-233 8z" fill="#ffefcf"/>
+            <path d="m60 80 202-4 5 8-213 6z" fill="url(#windows)"/>
+            <g stroke="#f8e9c7" stroke-width="1.4" fill="none"><path d="M16 91v-9l34-1m-27 9v-8m7 8v-8m7 7v-7m7 7v-7m236 3v-8l32-1 15-5m-40 13v-8m8 7v-7m8 6v-7m8 5v-6m8 4v-7"/></g>
+            <path d="M8 89c60 5 212 2 266-3l59-14-21 22-34 12-235 2-22-7z" fill="#183a59"/>
+            <path d="M9 90c70 6 204 2 265-3l58-14-7 7-51 13c-94 7-181 7-255 3z" fill="#ff8956"/>
+            <path d="m42 107 226-4 45-10-13 11-38 11-211 1z" fill="#ff8956"/><path d="M23 110h105m-79 9h69m14-3h93" stroke="#e0e8d3" stroke-width="2.2"/>
+            <circle cx="305" cy="87" r="2.1" fill="#fff0ce"/></g>
+          </g>
+          <g fill="none" stroke="#b5d4ec" stroke-width="2.2"><path d="M0 130h68m11-2h52m43 8h98m16-2h40m-6-12h49m-173 21h43"/></g>
+          <path d="M0 142h46v2H0zm76-7h74v2H76zm185 9h70v2h-70z" fill="#245ba1"/>
+        </svg>
+        <svg class="mobile-art" viewBox="0 0 400 100" preserveAspectRatio="none">
+          <path d="M119 100c35-1 61-8 90-12 32-5 59-12 87-12 31-1 56 3 104-3v27z" fill="#8db5e3"/>
+          <path d="M0 100c60-1 111 0 175-5 64-5 111-13 162-13 21 0 45-3 63-4v22z" fill="#b5d4ec"/>
+          <path d="M55 100c105-1 141-2 207-8 37-4 82-2 138-8v16z" fill="#477dbb"/>
+          <path d="M206 97h54m41-4h48m19-4h27" fill="none" stroke="#b5d4ec" stroke-width="1.4"/>
+          <use href="#vessel" transform="translate(195 25) scale(.57 .57)"/>
+        </svg>
+      </div>
+    </section>
+    <section class="timetable" aria-labelledby="schedule"><div class="schedule-title"><h2 id="schedule">Shift timetable</h2><span id="count" role="status"></span></div>
+      <div class="grid columns" aria-hidden="true"><span><span class="full-col-name">Scheduled</span><span class="mobile-col-name">Sched.</span></span><span>Destination</span><span class="pier-col">Pier</span><span>Service status</span></div><div id="list"></div>
+    </section>
   </div>
-  <svg class="hero-art" aria-hidden="true" viewBox="0 0 430 180" preserveAspectRatio="xMidYMid meet">
-   <defs><pattern id="hatch" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M-1 4 4-1m-1 6 2-2" stroke="#325d52" stroke-width=".65"/></pattern><pattern id="glass" width="13" height="13" patternUnits="userSpaceOnUse"><path d="M1 1h8v7H1z" fill="#2a554d"/></pattern></defs>
-   <g fill="none" stroke="#739d8b" stroke-width=".8" opacity=".68">
-    <path d="M64 149c36-2 63 3 103 0s47 1 88 0 78-3 138-3M82 153c37 0 43 2 70 1m12 1 65 1m12-1 70-2m15-2 41-1M110 160h39m10-1 40 2m16 0 54-2m12-1 25-1m-132 8 31 1m13 0 23-1"/>
-    <path d="M279 49h82m-57-4h80M35 112h39m-25-4h43" stroke-dasharray="8 4 2 6"/>
-   </g>
-   <g stroke="#2a574e" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M36 128h45l8-10 30-2 10-17h105l8-12h49l13 19 10 1 4 10h26l5 6 30-3-18 18-33 7H80l-29-5z" fill="#add5c0" stroke-width="1.7"/>
-    <path d="m37 128 44 5 227-2 45-5 26-6-15 17-31 8H83l-29-5z" fill="#355f54" stroke-width="1.4"/>
-    <path d="m54 132 30 4 230-2 49-6" fill="none" stroke="#c1e5cf" stroke-width="1.3"/>
-    <path d="m75 141 237-1 49-6" fill="none" stroke="#99bfab" stroke-width="1.1"/>
-    <path d="M86 117h222l7 9H75z" fill="#bddfc9"/><path d="M100 118h196v7H96z" stroke="none" fill="url(#glass)"/>
-    <path d="m123 115 7-14 166 1 9 13z" fill="#c1dfc8"/><path d="M134 105h151l8 7H131z" stroke="none" fill="#3a6559"/>
-    <path d="m146 104-3 10m18-10-3 10m18-10-3 10m18-10-3 10m18-10-3 10m18-10-3 10m18-10-2 10m17-10-2 10m16-10 1 10m12-10 2 10" stroke="#c1dfc8" stroke-width="2.3"/>
-    <path d="M130 98h164l4 4H126zm107-1 6-10h45l5 10z" fill="#8aaf99"/><path d="M247 89h35l5 5h-44z" fill="#355e54" stroke-width=".6"/><path d="M253 89v6m12-6v6m11-6v6" stroke="#c1dfc8" stroke-width="1.3"/>
-    <path d="M239 85h50m-99 12-4-17 20-2 7 19z" fill="#81a88e"/><path d="m187 83-1-5 20-2 2 5z" fill="#355f54"/><path d="m191 88 14-2 2 4-14 2z" fill="url(#hatch)" stroke-width=".6"/>
-    <path d="M222 97V63m-7 11 17-3m-12-5 8-2m-6-1v-5m0 15-13 24m13-25 11 24" fill="none" stroke-width="1"/><circle cx="222" cy="57" r="1.8" fill="#355f54" stroke="none"/>
-    <g stroke-width=".9" fill="none"><path d="M46 126v-9l35-1m-29 9v-8m8 9v-9m8 9v-10m8 9v-9m246 4v-8l28 1 18-3m-40 11v-8m8 8v-8m8 8v-7m9 7v-8m8 6v-7"/>
-     <path d="M110 115v-11h15m-8 10v-10m32-7v-7h25v7m-20-7v7m8-7v7m8-7v7"/></g>
-    <circle cx="349" cy="132" r="1.1" fill="#bedfcd" stroke="none"/><circle cx="355" cy="131" r="1.1" fill="#bedfcd" stroke="none"/>
-   </g>
-  </svg>
- </section>
- <section aria-labelledby="shift">
-  <div class="panel-top"><div class="panel-title"><h2 id="shift">Shift departures</h2><span id="count" class="sailing-count" aria-live="polite"></span></div>
-   <div class="tabs" role="group" aria-label="Filter departures by pier"><button type="button" data-pier="0" aria-pressed="true">All piers</button><button type="button" data-pier="1" aria-pressed="false">Pier 1</button><button type="button" data-pier="2" aria-pressed="false">Pier 2</button><button type="button" data-pier="3" aria-pressed="false">Pier 3</button></div>
-  </div>
-  <div class="schedule"><div class="grid colheads" aria-hidden="true"><span>Sched<span>uled</span></span><span>Destination</span><span class="pier-head">Pier</span><span>Service status</span></div><div id="list"></div></div>
- </section>
- <footer><svg aria-hidden="true" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.8"/><path d="M8 4.5v3.8l2.3 1.5"/></svg>All times are local · 24-hour clock</footer>
+  <footer><svg class="icon" aria-hidden="true"><use href="#i-delay"/></svg>All times are local · 24-hour clock</footer>
+  <div id="announcement" role="status" style="clip-path:inset(50%);position:absolute;width:1px;height:1px;overflow:hidden"></div>
 </main>
 <dialog id="details" aria-labelledby="detail-name" aria-describedby="summary-text"><div class="detail">
- <div class="detail-top"><span class="detail-kicker">Sailing details</span><button class="close" type="button" aria-label="Close sailing details">×</button></div>
- <h2 id="detail-name"></h2><p id="detail-meta"></p><div id="detail-state"></div>
- <div class="summary"><h3>Caller summary</h3><p id="summary-text"></p></div>
- <div class="detail-bottom"><button class="copy" type="button">Copy summary</button><span id="feedback" role="status"></span></div>
+  <div class="detail-top"><span class="detail-kicker"><svg class="icon" aria-hidden="true"><use href="#i-ship"/></svg>Sailing details</span><button type="button" class="close" aria-label="Close sailing details"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+  <h2 id="detail-name"></h2><dl class="detail-meta"><div><dt>Scheduled</dt><dd><time id="detail-time"></time><span id="detail-day"></span></dd></div><div><dt>Departure pier</dt><dd id="detail-pier"></dd></div></dl>
+  <div id="detail-state"></div><div class="summary"><h3>Caller summary</h3><p id="summary-text"></p></div>
+  <div class="detail-bottom"><button type="button" class="copy"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>Copy summary</button><span role="status" id="feedback"></span></div>
 </div></dialog>
 <script>
-const days = ['Saturday, 14 March','Sunday, 15 March'];
+const days = ['Saturday, 14 March', 'Sunday, 15 March'];
+const now = 23 * 60 + 42;
 const sailings = [
- {day:0,time:'23:45',to:'Lark Island',pier:2,type:'delayed',status:'Delayed → Sun 00:10',note:'Late inbound vessel',summary:'Saturday’s 23:45 sailing to Lark Island from Pier 2 is delayed because the inbound vessel is late. It is now due to depart at 00:10 on Sunday.'},
- {day:0,time:'23:50',to:'Westhaven',pier:1,type:'cancelled',status:'Cancelled',note:'High winds',summary:'Saturday’s 23:50 sailing to Westhaven from Pier 1 is cancelled because of high winds. Sunday’s 00:20 departure from Pier 1 is a separate Westhaven service and is on time.'},
- {day:0,time:'23:55',to:'Alder Point',pier:3,type:'boarding',status:'Boarding',note:'On time',summary:'Saturday’s 23:55 sailing to Alder Point is boarding at Pier 3 and is on time.'},
- {day:1,time:'00:05',to:'Ork Ferry',pier:1,type:'normal',status:'On time'},
- {day:1,time:'00:20',to:'Westhaven',pier:1,type:'normal',status:'On time',summary:'Sunday’s 00:20 sailing to Westhaven from Pier 1 is on time. It is a separate service from Saturday’s cancelled 23:50 sailing.'},
- {day:1,time:'00:40',to:'Lark Island',pier:2,type:'normal',status:'On time'}
+  {day:0, time:'23:45', to:'Lark Island', pier:2, type:'delayed', revised:{day:1, time:'00:10'}, note:'Late inbound vessel', summary:'Saturday’s 23:45 sailing to Lark Island from Pier 2 is delayed because the inbound vessel is late. It is now due to depart at 00:10 on Sunday.'},
+  {day:0, time:'23:50', to:'Westhaven', pier:1, type:'cancelled', note:'High winds', summary:'Saturday’s 23:50 sailing to Westhaven from Pier 1 is cancelled because of high winds. Sunday’s 00:20 departure from Pier 1 is a separate Westhaven service and is on time.'},
+  {day:0, time:'23:55', to:'Alder Point', pier:3, type:'boarding', note:'On time', summary:'Saturday’s 23:55 sailing to Alder Point is boarding at Pier 3 and is on time.'},
+  {day:1, time:'00:05', to:'Ork Ferry', pier:1, type:'normal'},
+  {day:1, time:'00:20', to:'Westhaven', pier:1, type:'normal', summary:'Sunday’s 00:20 sailing to Westhaven from Pier 1 is on time. It is a separate service from Saturday’s cancelled 23:50 sailing.'},
+  {day:1, time:'00:40', to:'Lark Island', pier:2, type:'normal'}
 ];
-const marks = {
- delayed:'<circle cx="8" cy="8" r="6"/><path d="M8 4.7v3.8l2.2 1.4"/>',
- cancelled:'<circle cx="8" cy="8" r="6"/><path d="m6 6 4 4m0-4-4 4"/>',
- boarding:'<path d="M2.5 8h8m-3-3.2L11 8l-3.5 3.2M13 3v10"/>',
- normal:'<path d="m3 8 3.3 3.3L13 4.8"/>'
-};
-const list=document.getElementById('list'), dialog=document.getElementById('details');
-const buttons=[...document.querySelectorAll('[data-pier]')];
-function status(s){ return '<span class="state"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 16 16">'+marks[s.type]+'</svg></span>'+s.status+'</span>'; }
-function render(pier){
- const visible=sailings.filter(s=>!pier||s.pier===pier);
- document.getElementById('count').textContent=visible.length+(visible.length===1?' sailing':' sailings');
- list.replaceChildren();
- days.forEach((day,dayIndex)=>{
-  const group=visible.filter(s=>s.day===dayIndex);
-  if(!group.length)return;
-  const section=document.createElement('section');
-  const label=document.createElement('h3');label.className='dayline';label.textContent=day;section.append(label);
-  group.forEach(s=>{
-   const row=document.createElement('button');row.type='button';row.className='row grid '+s.type;
-   const displayStatus=s.type==='delayed'?'Delayed until Sunday 00:10':s.status;
-   row.setAttribute('aria-label',[day,s.time,s.to,'Pier '+s.pier,displayStatus,s.note,'Sailing details'].filter(Boolean).join(', '));
-   row.innerHTML='<time class="sched">'+s.time+'</time><span class="dest">'+s.to+'<small>Pier '+s.pier+'</small></span><span class="pier">Pier '+s.pier+'</span><span class="status">'+status(s)+(s.note?'<span class="sub">'+s.note+'</span>':'')+'</span><span class="arrow" aria-hidden="true"></span>';
-   row.addEventListener('click',()=>openDetail(s));section.append(row);
+const labels = {cancelled:'Cancelled', boarding:'Boarding', normal:'On time', delayed:'Delayed'};
+const icons = {cancelled:'cancel', boarding:'boarding', normal:'normal', delayed:'delay'};
+const byId = id => document.getElementById(id);
+const dialog = byId('details');
+const filters = [...document.querySelectorAll('[data-pier]')];
+let next;
+
+function icon(name, extraClass = '') {
+  return `<svg class="icon ${extraClass}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+}
+function weekday(day) {
+  return days[day].split(',')[0];
+}
+function minutes(sailing) {
+  const {day, time} = sailing.revised || sailing;
+  const [hour, minute] = time.split(':').map(Number);
+  return day * 1440 + hour * 60 + minute;
+}
+function status(sailing) {
+  const label = sailing.revised ? `Delayed · ${weekday(sailing.revised.day).slice(0,3)} ${sailing.revised.time}` : labels[sailing.type];
+  return `<span class="status-line">${icon(icons[sailing.type])}${label}</span>`;
+}
+function updatePoster(visible) {
+  next = visible.filter(s => s.type !== 'cancelled' && minutes(s) >= now).sort((a,b) => minutes(a) - minutes(b))[0];
+  const departure = next.revised || next;
+  byId('next-pier').textContent = next.pier;
+  byId('next-time').textContent = departure.time;
+  byId('next-time').dateTime = departure.time;
+  byId('next-when').textContent = `${weekday(departure.day)} · In ${minutes(next) - now} min`;
+  byId('next-to').textContent = next.to;
+  let condition = labels[next.type];
+  if (next.type === 'boarding') condition += ' · On time';
+  if (next.revised) condition += ` from ${next.time}`;
+  byId('next-state').innerHTML = icon(icons[next.type]) + condition;
+}
+function createRow(s) {
+  const row = document.createElement('button');
+  row.type = 'button';
+  row.className = `row grid ${s.type}`;
+  const service = s.revised ? `Delayed until ${weekday(s.revised.day)} ${s.revised.time}` : labels[s.type];
+  row.setAttribute('aria-label', [days[s.day], s.time, s.to, `Pier ${s.pier}`, service, s.note, 'Sailing details'].filter(Boolean).join(', '));
+  row.innerHTML = `<time class="sched" datetime="${s.time}">${s.time}</time>
+    <span class="dest">${s.to}<small>Pier ${s.pier}</small></span><span class="pier">Pier ${s.pier}</span>
+    <span class="status">${status(s)}${s.note ? `<span class="sub">${s.note}</span>` : ''}</span>${icon('chevron', 'row-arrow')}`;
+  row.addEventListener('click', () => openDetail(s));
+  return row;
+}
+function render(pier) {
+  const visible = sailings.filter(s => !pier || s.pier === pier);
+  updatePoster(visible);
+  byId('count').textContent = `${visible.length} ${visible.length === 1 ? 'sailing' : 'sailings'}`;
+  const groups = [];
+  days.forEach((day, index) => {
+    const group = visible.filter(s => s.day === index);
+    if (!group.length) return;
+    const section = document.createElement('section');
+    section.className = 'group';
+    const heading = document.createElement('h3');
+    heading.textContent = day;
+    heading.className = 'dayline';
+    section.append(heading, ...group.map(createRow));
+    groups.push(section);
   });
-  list.append(section);
- });
- buttons.forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.pier)===pier)));
+  byId('list').replaceChildren(...groups);
+  filters.forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.pier) === pier)));
 }
-function openDetail(s){
- document.getElementById('detail-name').textContent=s.to;
- document.getElementById('detail-meta').textContent=days[s.day]+' · '+s.time+' · Pier '+s.pier;
- const state=document.getElementById('detail-state');state.className=s.type;state.innerHTML=status(s);
- document.getElementById('summary-text').textContent=s.summary||'Sunday’s '+s.time+' sailing to '+s.to+' from Pier '+s.pier+' is on time.';
- document.getElementById('feedback').textContent='';dialog.showModal();
+function openDetail(s) {
+  byId('detail-name').textContent = s.to;
+  byId('detail-time').textContent = s.time;
+  byId('detail-time').dateTime = s.time;
+  byId('detail-day').textContent = days[s.day];
+  byId('detail-pier').textContent = `Pier ${s.pier}`;
+  byId('detail-state').className = s.type;
+  byId('detail-state').innerHTML = status(s) + (s.type === 'boarding' ? ' · On time' : '');
+  byId('summary-text').textContent = s.summary || `${weekday(s.day)}’s ${s.time} sailing to ${s.to} from Pier ${s.pier} is on time.`;
+  byId('feedback').textContent = '';
+  dialog.showModal();
 }
-buttons.forEach(b=>b.addEventListener('click',()=>render(Number(b.dataset.pier))));
-document.querySelector('.close').addEventListener('click',()=>dialog.close());
-dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
-document.querySelector('.copy').addEventListener('click',async()=>{
- const summary=document.getElementById('summary-text');
- const range=document.createRange();range.selectNodeContents(summary);
- const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);
- const feedback=document.getElementById('feedback');
- feedback.textContent='Summary selected for copying';
- let copied=false;
- try{copied=document.execCommand('copy');}catch{}
- if(!copied){try{await navigator.clipboard.writeText(summary.textContent);copied=true;}catch{}}
- if(copied){selection.removeAllRanges();feedback.textContent='Copied';}
+filters.forEach(button => button.addEventListener('click', () => {
+  render(Number(button.dataset.pier));
+  const departure = next.revised || next;
+  byId('announcement').textContent = `${button.textContent}. Next departure ${weekday(departure.day)} ${departure.time} to ${next.to} from Pier ${next.pier}.`;
+}));
+document.querySelector('.open-detail').addEventListener('click', () => openDetail(next));
+document.querySelector('.close').addEventListener('click', () => dialog.close());
+dialog.addEventListener('click', event => {
+  if (event.target !== dialog) return;
+  const bounds = dialog.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+});
+document.querySelector('.copy').addEventListener('click', async () => {
+  const summary = byId('summary-text');
+  const range = document.createRange();
+  range.selectNodeContents(summary);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  let copied = false;
+  try {copied = document.execCommand('copy');} catch {}
+  if (!copied && navigator.clipboard) {
+    try {await navigator.clipboard.writeText(summary.textContent); copied = true;} catch {}
+  }
+  if (copied) selection.removeAllRanges();
+  byId('feedback').textContent = copied ? 'Copied' : 'Summary selected for copying';
 });
 render(0);
 </script>

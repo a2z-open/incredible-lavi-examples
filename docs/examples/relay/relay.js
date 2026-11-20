@@ -90,7 +90,7 @@ function badgePriority(item, full = false) {
   const meaning = priorities[item.priority];
   return '<span class="severity ' + item.priority.toLowerCase() + '" title="' + meaning + '">' +
     '<i aria-hidden="true"></i><span>' + item.priority + '</span>' +
-    (full ? '<span class="severity-name">' + meaning + '</span>' : workstation ? '' : '<span class="visually-hidden"> ' + meaning + '</span>') + '</span>';
+    (full ? '<span class="severity-name">' + meaning + '</span>' : '<span class="visually-hidden"> ' + meaning + '</span>') + '</span>';
 }
 
 function badgeStatus(item) {
@@ -105,8 +105,7 @@ function ownerName(item) {
 function queueRow(item, current) {
   return '<li><button class="queue-row ' + item.priority.toLowerCase() + (current ? ' selected' : '') + '" data-open="' + item.id + '"' +
     (current ? ' aria-current="true"' : '') + '>' +
-    '<span class="row-severity">' + badgePriority(item) +
-    (workstation ? '<span class="row-severity-name">' + priorities[item.priority] + '</span>' : '') + '</span>' +
+    '<span class="row-severity">' + badgePriority(item) + '</span>' +
     '<span class="row-incident"><strong>' + item.title + '</strong><span class="row-meta"><span class="case-id">' + item.id +
     '</span><span>' + item.service + '</span><span class="row-region">' + item.region + '</span></span></span>' +
     '<span class="row-state">' + badgeStatus(item) + '</span>' +
@@ -128,9 +127,10 @@ function renderQueue() {
   if (focusedView) views.querySelector('[data-view="' + focusedView + '"]')?.focus({ preventScroll: true });
 
   const current = selected || (workstation && !narrow.matches ? visible[0]?.id : '');
+  const headings = workstation ? '' :
+    '<div class="row-head" aria-hidden="true"><span>Priority</span><span>Incident</span><span>Status</span><span>Owner</span></div>';
   queueList.innerHTML = visible.length ?
-    '<div class="row-head" aria-hidden="true"><span>Priority</span><span>Incident</span><span>Status</span><span>Owner</span></div>' +
-    '<ul class="rows">' + visible.map(item => queueRow(item, workstation && !narrow.matches && current === item.id)).join('') + '</ul>' :
+    headings + '<ul class="rows">' + visible.map(item => queueRow(item, workstation && !narrow.matches && current === item.id)).join('') + '</ul>' :
     '<div class="empty"><strong>No incidents match this view.</strong><p>Clear your search and filters to see all incidents.</p><button class="button" data-reset>Show all incidents</button></div>';
 
   const countLabel = visible.length === 1 ? '1 incident' : visible.length + ' incidents';
@@ -192,6 +192,32 @@ function stateAction(item) {
   return '';
 }
 
+function noteForm(body) {
+  return '<form id="note-form" class="note-form"><label for="handoff-note" class="control-label">Add a handoff note</label>' +
+    '<textarea id="handoff-note" name="note" maxlength="400" rows="2" placeholder="What changed? What should the next responder check?" required>' +
+    escapeHtml(body) + '</textarea><div class="note-actions"><span class="note-limit" id="note-limit">' + body.length + ' / 400</span>' +
+    '<button type="submit" class="button" id="save-note"' + (body.trim().length ? '' : ' disabled') + '>Save note</button></div></form>';
+}
+
+function responseHistory(item, body) {
+  return '<section class="history" aria-labelledby="history-title"><div class="history-header"><h3 id="history-title">Response history</h3>' +
+    '<span class="history-count">' + item.activity.length + ' events</span></div>' + noteForm(body) +
+    '<ol class="timeline" aria-label="Activity, most recent first">' + [...item.activity].reverse().map(historyEntry).join('') +
+    '</ol></section>';
+}
+
+function renderCase(item, body) {
+  return '<div class="case-header"><button class="button compact back-button" data-close>Back to queue</button>' +
+    '<div class="case-line"><span class="detail-id">' + item.id + '</span><div class="detail-status">' +
+    badgePriority(item, true) + badgeStatus(item) + '</div></div>' +
+    '<h2 id="detail-title" tabindex="-1">' + item.title + '</h2><div class="detail-context"><span>' +
+    item.service + '</span><span>' + item.region + '</span></div></div>' +
+    '<div class="case-work"><section class="case-impact"><h3 class="subheading">Customer impact</h3><p class="impact">' + item.impact +
+    '</p></section><section class="case-actions" aria-label="Ownership and status"><div class="response-actions">' +
+    ownerForm(item) + stateAction(item) + '</div><p class="feedback" id="feedback" ' + (feedback ? '' : 'hidden') + '>' +
+    escapeHtml(feedback) + '</p></section></div>' + responseProgress(item) + responseHistory(item, body);
+}
+
 function renderDetail(id) {
   const item = incident(id);
   if (!item) {
@@ -202,12 +228,16 @@ function renderDetail(id) {
   }
 
   detail.dataset.id = id;
-  const opened = item.activity[0].at;
   const body = drafts.get(id) || '';
+  if (workstation) {
+    detail.innerHTML = renderCase(item, body);
+    return;
+  }
+
+  const opened = item.activity[0].at;
   detail.innerHTML =
     '<div class="detail-top"><span class="detail-id"><i aria-hidden="true"></i>' + item.id + '</span>' +
-    (workstation ? responseProgress(item) + '<button class="button compact back-button" data-close>Back to queue</button>' :
-      '<button class="close-button" data-close aria-label="Close incident"></button>') + '</div>' +
+    '<button class="close-button" data-close aria-label="Close incident"></button></div>' +
     '<div class="detail-hero"><div class="detail-status">' + badgePriority(item, true) + badgeStatus(item) + '</div>' +
     '<h2 id="detail-title" tabindex="-1">' + item.title + '</h2><div class="detail-context"><span>' + item.service +
     '</span><span>' + item.region + '</span><span>Opened <time datetime="' +
@@ -216,13 +246,7 @@ function renderDetail(id) {
     '<h3 class="subheading">Customer impact</h3><p class="impact">' + item.impact + '</p>' +
     '<div class="response-actions">' + ownerForm(item) + stateAction(item) + '</div>' +
     '<p class="feedback" id="feedback" ' + (feedback ? '' : 'hidden') + '>' + escapeHtml(feedback) + '</p></section>' +
-    '<section class="history" aria-labelledby="history-title"><div class="history-header"><h3 id="history-title">Response history</h3>' +
-    '<span class="history-count">' + item.activity.length + ' events</span></div>' +
-    '<form id="note-form" class="note-form"><label for="handoff-note" class="control-label">Add a handoff note</label>' +
-    '<textarea id="handoff-note" name="note" maxlength="400" rows="2" placeholder="What changed? What should the next responder check?" required>' +
-    escapeHtml(body) + '</textarea><div class="note-actions"><span class="note-limit" id="note-limit">' + body.length + ' / 400</span>' +
-    '<button type="submit" class="button" id="save-note"' + (body.trim().length ? '' : ' disabled') + '>Save note</button></div></form>' +
-    '<ol class="timeline" aria-label="Activity, most recent first">' + [...item.activity].reverse().map(historyEntry).join('') + '</ol></section></div>';
+    responseHistory(item, body) + '</div>';
 
   if (incidentDialog && !incidentDialog.open) incidentDialog.showModal();
 }
@@ -252,7 +276,7 @@ function openIncident(id) {
   lastOpened = id;
   feedback = '';
   refresh('detail-title');
-  if (narrow.matches && workstation) window.scrollTo(0, 0);
+  if (workstation) window.scrollTo(0, 0);
   if (incidentDialog) incidentDialog.scrollTop = 0;
 }
 

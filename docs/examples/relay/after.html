@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="light">
   <title>Relay · Incident queue</title>
   <link rel="stylesheet" href="relay.css">
+  <link rel="stylesheet" href="workstation.css">
   <script src="fixtures.js" defer></script>
   <script src="relay.js" defer></script>
 </head>
@@ -13,16 +14,13 @@
   <header class="masthead">
     <div class="masthead-inner">
       <div class="brand"><i class="brand-mark" aria-hidden="true"></i> Relay</div>
-      <div class="workspace"><span>Training workspace</span><b class="avatar" title="Avery Morgan">AM</b></div>
+      <div class="workspace"><span>Training workspace</span><div class="operator"><b class="avatar" aria-hidden="true">AM</b><span>Avery Morgan</span></div></div>
     </div>
   </header>
   <main class="shell">
-    <div class="intro">
-      <h1>Incident queue</h1>
-      <p>Review, assign, and track service incidents.</p>
-    </div>
     <div class="desk">
       <section id="queue" class="queue" aria-label="Incidents">
+        <h1>Incident queue</h1>
         <div class="views" role="group" aria-label="Queue views"></div>
         <div class="filters">
           <label class="search"><span class="visually-hidden">Search incidents</span><i class="search-icon" aria-hidden="true"></i><input type="search" id="search" placeholder="Search incidents"></label>
